@@ -1,0 +1,85 @@
+import os
+
+def quadratic_model(a, b, c, x):
+    """
+    Calculate the value of the quadratic equation y = ax^2 + bx + c.
+    """
+    return a * x**2 + b * x + c
+
+# Hardcoded coefficients (default values)
+default_a = 1
+default_b = -2
+default_c = 1
+
+# Function to handle keyboard input
+def keyboard_input():
+    print("Enter coefficients for the quadratic equation (y = ax^2 + bx + c):")
+    a = float(input("a: "))
+    b = float(input("b: "))
+    c = float(input("c: "))
+    x = float(input("Enter the x value to predict y: "))
+    return a, b, c, x
+
+# Function to read inputs from a file
+def read_from_file(filename):
+    inputs = []
+    try:
+        with open(filename, 'r') as file:
+            for line in file:
+                values = line.strip().split(',')
+                if len(values) == 4:  # Ensure correct number of inputs
+                    inputs.append(tuple(map(float, values)))
+                else:
+                    print(f"Skipping invalid line: {line.strip()}")
+    except Exception as e:
+        print(f"Error reading file: {e}")
+    return inputs
+
+# Function to save results
+def save_results(filename, results):
+    try:
+        with open(filename, 'w') as file:
+            for result in results:
+                file.write(",".join(map(str, result)) + "\n")
+        print(f"Results saved to {filename}")
+    except Exception as e:
+        print(f"Error saving results: {e}")
+
+# Main execution
+def main():
+    results = []
+    print("Weather Modeling using a Quadratic Equation\n")
+    print("Choose an input method:")
+    print("1. Hardcoded values")
+    print("2. Keyboard input")
+    print("3. Read from file")
+    choice = input("Enter your choice (1/2/3): ")
+
+    if choice == '1':
+        x = float(input("Enter the x value to predict y: "))
+        y = quadratic_model(default_a, default_b, default_c, x)
+        results.append((default_a, default_b, default_c, x, y))
+    elif choice == '2':
+        a, b, c, x = keyboard_input()
+        y = quadratic_model(a, b, c, x)
+        results.append((a, b, c, x, y))
+    elif choice == '3':
+        filename = input("Enter the filename to read from: ")
+        inputs = read_from_file(filename)
+        for a, b, c, x in inputs:
+            y = quadratic_model(a, b, c, x)
+            results.append((a, b, c, x, y))
+    else:
+        print("Invalid choice!")
+
+    # Display results
+    print("\nResults:")
+    for result in results:
+        print(f"Coefficients (a={result[0]}, b={result[1]}, c={result[2]}), x={result[3]} => y={result[4]}")
+
+    # Save results
+    save_filename = input("Enter the filename to save results: ")
+    save_results(save_filename, results)
+
+if __name__ == "__main__":
+    main()
